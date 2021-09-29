@@ -1,12 +1,12 @@
 import graphene
 
 import datasets.schema
+import users.schema
 
-
-class Query(datasets.schema.Query, graphene.ObjectType):
+class Query(users.schema.Query, datasets.schema.Query, graphene.ObjectType):
     pass
 
-class Mutation(datasets.schema.Mutation, graphene.ObjectType):
+class Mutation(users.schema.Mutation, datasets.schema.Mutation, graphene.ObjectType):
     pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
