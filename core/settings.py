@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # After the default packages
+    'graphene_django',
+    # Local apps
+    'datasets',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+GRAPHENE = {
+    'SCHEMA': 'core.schema.schema',
+}
