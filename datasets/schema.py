@@ -4,6 +4,7 @@ from graphene_django import DjangoObjectType
 from .models import Dataset, Like
 from users.schema import UserType
 
+from graphql import GraphQLError
 
 class DatasetType(DjangoObjectType):
     class Meta:
@@ -60,7 +61,7 @@ class CreateLike(graphene.Mutation):
     def mutate(self, info, dataset_id):
         user = info.context.user
         if user.is_anonymous:
-            raise Exception('You must be logged to like!')
+            raise GraphQLError('You must be logged to like!') #Exception('You must be logged to like!')
 
         dataset = Dataset.objects.filter(id=dataset_id).first()
         if not dataset:
