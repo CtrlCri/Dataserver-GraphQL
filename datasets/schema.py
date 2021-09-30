@@ -5,6 +5,7 @@ from .models import Dataset, Like
 from users.schema import UserType
 
 from graphql import GraphQLError
+from django.db.models import Q
 
 class DatasetType(DjangoObjectType):
     class Meta:
@@ -15,11 +16,29 @@ class LikeType(DjangoObjectType):
         model = Like
 
 class Query(graphene.ObjectType):
-    datasets = graphene.List(DatasetType)
+    # Add the first and skip parameters
+    datasets = graphene.List(
+        DatasetType,
+        search=graphene.String(),
+        first=graphene.Int(),
+        skip=graphene.Int(),
+    )
     likes = graphene.List(LikeType)
 
-    def resolve_datasets(self, info, **kwargs):
-        return Dataset.objects.all()
+    def resolve_datasets(self, info, search=None, first=None, skip=None, **kwargs):
+        qs = Dataset.objects.all()
+        if search:
+            filter = (
+                Q(title__icontains=search) |
+                Q(about__icontains=search)
+            )
+            qs = qs.filter(filter)
+        if skip:
+            qs = qs[skip:]
+        if first:
+            qs = qs[:first]
+
+        return qs
 
     def resolve_likes(self, info, **kwargs):
         return Like.objects.all()
